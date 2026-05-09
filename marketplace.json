@@ -1,0 +1,12 @@
+{
+  "name": "people-ops-skills",
+  "description": "Modern hiring tools for People leaders — Work Experience Descriptions and structured interview plans built on the 8 Key Relationships framework.",
+  "version": "1.0.0",
+  "plugins": [
+    {
+      "name": "work-experience-and-interview",
+      "description": "Generate a complete Work Experience Description and Interview Plan for any role at any level.",
+      "source": "work-experience-and-interview"
+    }
+  ]
+}
