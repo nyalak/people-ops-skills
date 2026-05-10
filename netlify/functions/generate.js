@@ -8,7 +8,7 @@ exports.handler = async function(event) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'x-api-key': 'sk-ant-api03-AV829lq18Dd09Nsb-y9GBv1jXl9XwvvZ0xALcD0eHZVE25tn7EsW3jfrWyz6BCKQtuXYyNiCvS-Bw-06_QjqnigAA',
+        'x-api-key': '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',
         'anthropic-version': '2023-06-01'
       },
       body: JSON.stringify(body)
@@ -16,10 +16,16 @@ exports.handler = async function(event) {
     const data = await response.json();
     return {
       statusCode: 200,
-      headers: { 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json' },
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Content-Type': 'application/json'
+      },
       body: JSON.stringify(data)
     };
   } catch (error) {
-    return { statusCode: 500, body: JSON.stringify({ error: error.message }) };
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ error: error.message })
+    };
   }
 };
