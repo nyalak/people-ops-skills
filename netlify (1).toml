@@ -1,0 +1,5 @@
+[functions]
+  node_bundler = "esbuild"
+
+[functions."generate"]
+  timeout = 26
