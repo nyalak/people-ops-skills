@@ -1,4 +1,18 @@
 {
+  "rewrites": [
+    {
+      "source": "/framework",
+      "destination": "/framework.html"
+    },
+    {
+      "source": "/skill",
+      "destination": "/skill.html"
+    },
+    {
+      "source": "/consulting",
+      "destination": "/consulting.html"
+    }
+  ],
   "functions": {
     "api/generate.js": {
       "maxDuration": 300
