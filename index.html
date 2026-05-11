@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>People Studio — AI-powered People Ops Skills</title>
+<meta name="description" content="The home for AI-powered People Operations Claude skills. Free weekly skill drops spanning every domain of the employee lifecycle.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --ink:#0e0c0a;--canvas:#f7f4ef;--warm-white:#fdfcf9;
+  --gold:#b8935a;--gold-light:#d4aa72;--gold-dim:rgba(184,147,90,0.12);
+  --muted:#7a7167;--border:rgba(14,12,10,0.1);--surface:#ffffff;--radius:3px;
+}
+body{font-family:'DM Sans',sans-serif;background:var(--canvas);color:var(--ink);min-height:100vh;}
+a{color:inherit;text-decoration:none;}
+
+/* NAV */
+.nav{background:var(--ink);padding:15px 40px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;position:sticky;top:0;z-index:100;}
+.logo{font-family:'Playfair Display',serif;color:var(--gold);font-size:18px;cursor:pointer;}
+.logo-sub{color:rgba(255,255,255,0.3);font-size:10px;font-family:'DM Sans',sans-serif;font-weight:300;letter-spacing:0.12em;text-transform:uppercase;margin-left:8px;}
+.nav-links{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.nav-btn{background:transparent;border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.5);padding:6px 14px;font-family:'DM Sans',sans-serif;font-size:11px;font-weight:500;letter-spacing:0.07em;text-transform:uppercase;border-radius:2px;cursor:pointer;transition:all 0.2s;}
+.nav-btn:hover,.nav-btn.active{border-color:var(--gold);color:var(--gold-light);background:var(--gold-dim);}
+.nav-cta{background:var(--gold);color:var(--ink);border:none;padding:7px 16px;font-family:'DM Sans',sans-serif;font-size:11px;font-weight:500;letter-spacing:0.07em;text-transform:uppercase;border-radius:2px;cursor:pointer;transition:all 0.2s;}
+.nav-cta:hover{background:var(--gold-light);}
+
+/* PAGES */
+.page{display:none;}
+.page.active{display:block;animation:fadeUp 0.3s ease both;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+
+/* HERO */
+.hero{background:var(--ink);padding:64px 48px 52px;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 80% 40%,rgba(184,147,90,0.08) 0%,transparent 65%);pointer-events:none;}
+.hero-eyebrow{font-size:10px;font-weight:500;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold);margin-bottom:14px;}
+.hero-title{font-family:'Playfair Display',serif;font-size:42px;line-height:1.08;color:#fff;font-weight:400;margin-bottom:8px;}
+.hero-domain{font-family:'Playfair Display',serif;font-size:42px;line-height:1.08;color:var(--gold-light);font-weight:400;font-style:italic;margin-bottom:20px;}
+.claude-badge{display:inline-flex;align-items:center;gap:7px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.13);color:rgba(255,255,255,0.55);padding:6px 14px;border-radius:100px;font-size:11px;font-weight:500;margin-bottom:20px;}
+.claude-dot{width:6px;height:6px;background:var(--gold);border-radius:50%;flex-shrink:0;}
+.hero-sub{color:rgba(255,255,255,0.45);font-size:15px;line-height:1.8;max-width:560px;margin-bottom:28px;}
+.hero-tags{display:flex;gap:8px;flex-wrap:wrap;}
+.tag{background:rgba(184,147,90,0.15);border:1px solid rgba(184,147,90,0.3);color:var(--gold-light);padding:5px 14px;border-radius:100px;font-size:11px;font-weight:500;letter-spacing:0.04em;}
+
+/* BODY */
+.body{padding:52px 48px 72px;max-width:1000px;}
+.section-label{font-size:10px;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-bottom:14px;}
+.section-title{font-family:'Playfair Display',serif;font-size:26px;font-weight:400;margin-bottom:8px;}
+.section-sub{font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:28px;max-width:580px;}
+
+/* SKILL CARDS */
+.skill-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:14px;}
+.skill-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;position:relative;overflow:hidden;}
+.skill-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--card-accent);}
+.claude-chip{display:inline-flex;align-items:center;gap:4px;background:var(--gold-dim);border:0.5px solid rgba(184,147,90,0.25);color:#854f0b;padding:2px 8px;border-radius:100px;font-size:10px;font-weight:500;margin-bottom:10px;}
+.skill-icon{font-size:22px;margin-bottom:10px;display:block;color:var(--card-accent);}
+.skill-name{font-size:13px;font-weight:500;margin-bottom:4px;}
+.skill-desc{font-size:12px;color:var(--muted);line-height:1.6;}
+.skill-badge{display:inline-block;font-size:10px;font-weight:500;padding:2px 9px;border-radius:100px;margin-top:10px;}
+.badge-live{background:rgba(29,158,117,0.12);color:#0f6e56;border:0.5px solid rgba(29,158,117,0.3);}
+.badge-soon{background:rgba(14,12,10,0.05);color:var(--muted);border:0.5px solid var(--border);}
+
+/* HOW IT WORKS */
+.steps{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:52px;}
+.step-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:22px;}
+.step-num{font-family:'Playfair Display',serif;font-size:30px;color:var(--gold);font-style:italic;margin-bottom:10px;line-height:1;}
+.step-title{font-size:14px;font-weight:500;margin-bottom:6px;}
+.step-body{font-size:12px;color:var(--muted);line-height:1.6;}
+.step-code{background:var(--gold-dim);border:1px solid rgba(184,147,90,0.2);border-radius:2px;padding:6px 10px;font-family:monospace;font-size:11px;color:var(--ink);margin-top:8px;display:block;word-break:break-all;}
+
+/* DOWNLOAD */
+.download-bar{background:var(--ink);border-radius:var(--radius);padding:36px 40px;margin-bottom:52px;display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;position:relative;overflow:hidden;}
+.download-bar::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 80% 50%,rgba(184,147,90,0.08) 0%,transparent 60%);pointer-events:none;}
+.download-text-title{font-family:'Playfair Display',serif;font-size:20px;color:#fff;margin-bottom:6px;}
+.download-text-sub{color:rgba(255,255,255,0.45);font-size:13px;line-height:1.6;max-width:420px;}
+.btn-download{background:var(--gold);color:var(--ink);border:none;padding:13px 26px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;letter-spacing:0.07em;text-transform:uppercase;border-radius:var(--radius);cursor:pointer;transition:all 0.2s;white-space:nowrap;flex-shrink:0;}
+.btn-download:hover{background:var(--gold-light);transform:translateY(-1px);}
+
+/* DROP SCHEDULE */
+.drop-section{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:32px;margin-bottom:52px;}
+.drop-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;}
+.drop-title{font-family:'Playfair Display',serif;font-size:18px;font-weight:400;}
+.drop-badge{background:var(--gold-dim);color:#854f0b;font-size:10px;font-weight:500;padding:3px 10px;border-radius:100px;border:0.5px solid rgba(184,147,90,0.25);}
+.drop-list{display:flex;flex-direction:column;gap:8px;}
+.drop-item{display:flex;align-items:center;gap:14px;padding:12px 16px;background:var(--canvas);border-radius:var(--radius);}
+.drop-week{font-size:10px;font-weight:500;color:var(--muted);letter-spacing:0.06em;text-transform:uppercase;min-width:50px;}
+.drop-info{flex:1;}
+.drop-name{font-size:13px;font-weight:500;margin-bottom:2px;}
+.drop-chip{display:inline-flex;align-items:center;gap:3px;font-size:9px;color:#854f0b;background:var(--gold-dim);border:0.5px solid rgba(184,147,90,0.2);padding:1px 6px;border-radius:100px;margin-left:6px;vertical-align:middle;}
+.drop-cat{font-size:11px;color:var(--muted);}
+.status-live{font-size:11px;font-weight:500;color:#0f6e56;}
+.status-soon{font-size:11px;color:var(--muted);}
+
+/* MISSION */
+.mission{background:var(--ink);border-radius:var(--radius);padding:40px;margin-bottom:52px;display:flex;align-items:flex-start;gap:32px;flex-wrap:wrap;position:relative;overflow:hidden;}
+.mission::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 20% 50%,rgba(184,147,90,0.06) 0%,transparent 60%);pointer-events:none;}
+.mission-text{flex:1;min-width:240px;}
+.mission-label{font-size:10px;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:10px;}
+.mission-title{font-family:'Playfair Display',serif;font-size:20px;color:#fff;font-weight:400;margin-bottom:12px;line-height:1.4;}
+.mission-body{font-size:13px;color:rgba(255,255,255,0.4);line-height:1.8;}
+.mission-stats{display:flex;gap:28px;flex-shrink:0;padding-top:8px;}
+.mission-stat{text-align:center;}
+.mission-num{font-family:'Playfair Display',serif;font-size:32px;color:var(--gold);display:block;line-height:1;margin-bottom:6px;font-style:italic;}
+.mission-statl{font-size:11px;color:rgba(255,255,255,0.3);line-height:1.5;}
+
+/* SIGNUP */
+.signup-section{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:36px;margin-bottom:52px;}
+.signup-title{font-family:'Playfair Display',serif;font-size:22px;font-weight:400;margin-bottom:6px;}
+.signup-sub{color:var(--muted);font-size:13px;line-height:1.6;margin-bottom:24px;max-width:500px;}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
+.form-group{display:flex;flex-direction:column;gap:5px;}
+.form-group.full{grid-column:1/-1;}
+.form-label{font-size:11px;font-weight:500;letter-spacing:0.04em;color:var(--muted);}
+.form-input{padding:10px 12px;border:1px solid var(--border);border-radius:var(--radius);font-family:'DM Sans',sans-serif;font-size:13px;background:var(--warm-white);color:var(--ink);outline:none;transition:border-color 0.2s;width:100%;appearance:none;-webkit-appearance:none;}
+.form-input:focus{border-color:var(--gold);}
+.form-input select,.form-input{background-image:none;}
+select.form-input{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%237a7167' fill='none' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px;}
+textarea.form-input{resize:vertical;min-height:80px;line-height:1.6;}
+.checkbox-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px;}
+.checkbox-item{display:flex;align-items:flex-start;gap:8px;padding:10px 12px;background:var(--canvas);border-radius:var(--radius);cursor:pointer;border:1px solid var(--border);transition:border-color 0.15s;}
+.checkbox-item:hover{border-color:var(--gold-light);}
+.checkbox-item input{margin-top:2px;accent-color:var(--gold);flex-shrink:0;}
+.checkbox-text{font-size:12px;line-height:1.4;font-weight:500;}
+.checkbox-text small{display:block;color:var(--muted);font-size:11px;margin-top:1px;font-weight:300;}
+.btn-primary{background:var(--ink);color:var(--gold-light);border:none;padding:13px 28px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;letter-spacing:0.07em;text-transform:uppercase;border-radius:var(--radius);cursor:pointer;transition:all 0.2s;margin-top:16px;}
+.btn-primary:hover{background:#1e1b17;transform:translateY(-1px);}
+.form-error{font-size:12px;color:#a32d2d;margin-top:8px;display:none;}
+.form-success{background:rgba(29,158,117,0.08);border:1px solid rgba(29,158,117,0.2);color:#0f6e56;padding:16px 20px;border-radius:var(--radius);font-size:13px;line-height:1.6;margin-top:16px;display:none;}
+
+/* FRAMEWORK PAGE */
+.fw-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:48px;}
+.fw-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:22px;transition:transform 0.2s,box-shadow 0.2s;}
+.fw-card:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(14,12,10,0.06);}
+.fw-num{font-family:'Playfair Display',serif;font-size:11px;color:var(--gold);font-style:italic;margin-bottom:8px;display:block;}
+.fw-name{font-size:14px;font-weight:500;margin-bottom:5px;}
+.fw-body{font-size:12px;color:var(--muted);line-height:1.7;}
+.fw-cta{background:var(--ink);padding:36px 48px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;}
+.fw-cta-text{font-family:'Playfair Display',serif;font-size:20px;color:#fff;font-weight:400;}
+.fw-cta-text em{font-style:italic;color:var(--gold-light);}
+
+/* CONSULTING */
+.services{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:32px;}
+.service-card{background:var(--surface);border:1px solid var(--border);border-top:2px solid var(--gold);border-radius:var(--radius);padding:20px;}
+.service-name{font-family:'Playfair Display',serif;font-size:16px;margin-bottom:6px;}
+.service-body{font-size:12px;color:var(--muted);line-height:1.6;}
+.service-price{font-size:11px;color:var(--gold);font-weight:500;margin-top:10px;letter-spacing:0.04em;}
+
+/* FOOTER */
+.footer{background:var(--ink);padding:28px 48px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;}
+.footer-text{color:rgba(255,255,255,0.3);font-size:12px;}
+.footer-link{color:var(--gold);font-size:12px;}
+
+@media(max-width:700px){
+  .skill-grid,.form-grid,.checkbox-grid,.steps,.services,.fw-grid{grid-template-columns:1fr;}
+  .hero{padding:40px 24px 36px;}
+  .hero-title,.hero-domain{font-size:30px;}
+  .body{padding:36px 24px 52px;}
+  .download-bar{padding:24px;}
+  .mission{padding:28px;}
+  .mission-stats{gap:20px;}
+  .footer{padding:24px;}
+  .nav{padding:12px 20px;}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div>
+    <span class="logo" onclick="showPage('home')">People Studio</span>
+    <span class="logo-sub">peoplestudio.ai</span>
+  </div>
+  <div class="nav-links">
+    <button class="nav-btn active" id="nav-home" onclick="showPage('home')">Home</button>
+    <button class="nav-btn" id="nav-framework" onclick="showPage('framework')">The Framework</button>
+    <button class="nav-btn" id="nav-skill" onclick="showPage('skill')">Get the Skill</button>
+    <button class="nav-btn" id="nav-consulting" onclick="showPage('consulting')">Work With Me</button>
+    <button class="nav-cta" onclick="scrollToSignup()">Get early access</button>
+  </div>
+</nav>
+
+<!-- ═══ HOME ═══ -->
+<div class="page active" id="page-home">
+  <div class="hero">
+    <div class="hero-eyebrow">Introducing</div>
+    <div class="hero-title">People Studio</div>
+    <div class="hero-domain">peoplestudio.ai</div>
+    <div class="claude-badge"><div class="claude-dot"></div>Claude Skills — works with any Claude account</div>
+    <div class="hero-sub">The home for AI-powered People Operations and strategic planning skills. Built on real frameworks by People leaders, for People leaders. New Claude skills drop every week — across every domain of the employee lifecycle.</div>
+    <div class="hero-tags">
+      <span class="tag">Weekly skill drops</span>
+      <span class="tag">Claude-powered</span>
+      <span class="tag">Built on real frameworks</span>
+      <span class="tag">Free to use</span>
+    </div>
+  </div>
+
+  <div class="body">
+
+    <div class="section-label">Claude skill categories</div>
+    <div class="section-title">Every domain of People Ops, covered.</div>
+    <div class="section-sub">Each skill is a Claude-powered tool built on real methodology — download, upload to Claude, and go. No installation, no code.</div>
+
+    <div class="skill-grid">
+      <div class="skill-card" style="--card-accent:#b8935a;">
+        <div class="claude-chip">Claude Skill</div>
+        <div class="skill-name">Talent Acquisition</div>
+        <div class="skill-desc">Work Experience Descriptions, interview plans, competency scorecards, and structured hiring frameworks.</div>
+        <span class="skill-badge badge-live">Live now</span>
+      </div>
+      <div class="skill-card" style="--card-accent:#1d9e75;">
+        <div class="claude-chip">Claude Skill</div>
+        <div class="skill-name">Performance</div>
+        <div class="skill-desc">Check-in scorecards, calibration frameworks, lightweight reviews, and performance documentation.</div>
+        <span class="skill-badge badge-soon">Coming soon</span>
+      </div>
+      <div class="skill-card" style="--card-accent:#7f77dd;">
+        <div class="claude-chip">Claude Skill</div>
+        <div class="skill-name">Onboarding</div>
+        <div class="skill-desc">0–90 day plans, new hire guides, manager prep, and team integration frameworks.</div>
+        <span class="skill-badge badge-soon">Coming soon</span>
+      </div>
+      <div class="skill-card" style="--card-accent:#d85a30;">
+        <div class="claude-chip">Claude Skill</div>
+        <div class="skill-name">Retention</div>
+        <div class="skill-desc">Stay interview generators, engagement surveys, flight risk tools, and career pathing frameworks.</div>
+        <span class="skill-badge badge-soon">Coming soon</span>
+      </div>
+    </div>
+    <div class="skill-grid" style="margin-bottom:52px">
+      <div class="skill-card" style="--card-accent:#378add;">
+        <div class="claude-chip">Claude Skill</div>
+        <div class="skill-name">Compensation</div>
+        <div class="skill-desc">Comp band builders, offer modeling, equity frameworks, and total rewards design tools.</div>
+        <span class="skill-badge badge-soon">Coming soon</span>
+      </div>
+      <div class="skill-card" style="--card-accent:#639922;">
+        <div class="claude-chip">Claude Skill</div>
+        <div class="skill-name">People Strategy</div>
+        <div class="skill-desc">Headcount planning, org design, workforce planning, and People Ops roadmaps.</div>
+        <span class="skill-badge badge-soon">Coming soon</span>
+      </div>
+      <div class="skill-card" style="--card-accent:#993556;">
+        <div class="claude-chip">Claude Skill</div>
+        <div class="skill-name">Learning &amp; Dev</div>
+        <div class="skill-desc">Career ladders, skill gap analysis, L&amp;D program design, and manager training tools.</div>
+        <span class="skill-badge badge-soon">Coming soon</span>
+      </div>
+      <div class="skill-card" style="--card-accent:#5f5e5a;">
+        <div class="claude-chip">Claude Skill</div>
+        <div class="skill-name">HR Compliance</div>
+        <div class="skill-desc">Policy drafting, handbook sections, RIF checklists, and legally-aware HR documentation.</div>
+        <span class="skill-badge badge-soon">Coming soon</span>
+      </div>
+    </div>
+
+    <div class="section-label">How it works</div>
+    <div class="section-title">Three steps. Any Claude account.</div>
+    <div class="section-sub">No installation, no code, no terminal. Just Claude and the skill file.</div>
+
+    <div class="steps">
+      <div class="step-card">
+        <div class="step-num">1</div>
+        <div class="step-title">Download the Claude skill</div>
+        <div class="step-body">Click below to download the SKILL.md file. It contains the full framework, instructions, and methodology.</div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">2</div>
+        <div class="step-title">Upload to Claude</div>
+        <div class="step-body">Go to claude.ai, start a new conversation, and upload the SKILL.md file using the paperclip icon.</div>
+        <span class="step-code">claude.ai → New chat → upload SKILL.md</span>
+      </div>
+      <div class="step-card">
+        <div class="step-num">3</div>
+        <div class="step-title">Run the skill</div>
+        <div class="step-body">Tell Claude what role and company to use. It walks you through everything step by step.</div>
+        <span class="step-code">Run this skill for [role] at [company]</span>
+      </div>
+    </div>
+
+    <div class="download-bar">
+      <div>
+        <div class="download-text-title">Download the first skill free — Talent Acquisition</div>
+        <div class="download-text-sub">Work Experience Description + full structured Interview Plan. Calibrated to Pave or Carta levels, your job family, competencies, and company values. Works with Claude free, Pro, and Team.</div>
+      </div>
+      <button class="btn-download" onclick="downloadSkill()">&#8595; Download SKILL.md</button>
+    </div>
+
+    <div class="drop-section">
+      <div class="drop-header">
+        <div class="drop-title">Upcoming Claude skill drops</div>
+        <span class="drop-badge">Weekly cadence</span>
+      </div>
+      <div class="drop-list">
+        <div class="drop-item">
+          <div class="drop-week">Now</div>
+          <div class="drop-info">
+            <div class="drop-name">Work Experience Description + Interview Plan <span class="drop-chip">Claude Skill</span></div>
+            <div class="drop-cat">Talent Acquisition &middot; 8 Key Relationships Framework &middot; Pave &amp; Carta leveling</div>
+          </div>
+          <div class="status-live">Live</div>
+        </div>
+        <div class="drop-item">
+          <div class="drop-week">Week 2</div>
+          <div class="drop-info">
+            <div class="drop-name">Performance Check-in Scorecard <span class="drop-chip">Claude Skill</span></div>
+            <div class="drop-cat">Performance &middot; Lightweight review framework &middot; Manager toolkit</div>
+          </div>
+          <div class="status-soon">Soon</div>
+        </div>
+        <div class="drop-item">
+          <div class="drop-week">Week 3</div>
+          <div class="drop-info">
+            <div class="drop-name">0&ndash;90 Day Onboarding Plan <span class="drop-chip">Claude Skill</span></div>
+            <div class="drop-cat">Onboarding &middot; Role-specific milestones &middot; Values integration</div>
+          </div>
+          <div class="status-soon">Soon</div>
+        </div>
+        <div class="drop-item">
+          <div class="drop-week">Week 4</div>
+          <div class="drop-info">
+            <div class="drop-name">Stay Interview Question Generator <span class="drop-chip">Claude Skill</span></div>
+            <div class="drop-cat">Retention &middot; Job type &amp; level calibrated &middot; Manager ready</div>
+          </div>
+          <div class="status-soon">Soon</div>
+        </div>
+        <div class="drop-item">
+          <div class="drop-week">Week 5</div>
+          <div class="drop-info">
+            <div class="drop-name">Compensation Band Builder <span class="drop-chip">Claude Skill</span></div>
+            <div class="drop-cat">Compensation &middot; Stage-appropriate &middot; Pave &amp; Carta families</div>
+          </div>
+          <div class="status-soon">Soon</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mission">
+      <div class="mission-text">
+        <div class="mission-label">Why People Studio</div>
+        <div class="mission-title">People Ops is one of the most relationship-driven functions in any company. AI should make it more human, not less.</div>
+        <div class="mission-body">Every Claude skill on People Studio is built on real frameworks from years of scaling People functions at tech companies. Not generic templates — methodologies grounded in the 8 key relationships between every employee and their organization.</div>
+      </div>
+      <div class="mission-stats">
+        <div class="mission-stat"><span class="mission-num">8</span><div class="mission-statl">Key relationships<br>framework</div></div>
+        <div class="mission-stat"><span class="mission-num">46</span><div class="mission-statl">Job families<br>supported</div></div>
+        <div class="mission-stat"><span class="mission-num">&#8734;</span><div class="mission-statl">Skills<br>planned</div></div>
+      </div>
+    </div>
+
+    <!-- SIGNUP -->
+    <div class="signup-section" id="signupSection">
+      <div class="signup-title">Get every Claude skill drop, free.</div>
+      <div class="signup-sub">Sign up to get early access to new skills the moment they drop — and help shape what we build next.</div>
+
+      <div id="signupForm">
+        <div class="form-grid">
+          <div class="form-group"><label class="form-label">First name</label><input class="form-input" type="text" id="fn" placeholder="Your first name"></div>
+          <div class="form-group"><label class="form-label">Work email</label><input class="form-input" type="email" id="em" placeholder="you@company.com"></div>
+          <div class="form-group"><label class="form-label">Company</label><input class="form-input" type="text" id="co" placeholder="Where do you work?"></div>
+          <div class="form-group"><label class="form-label">Your role</label>
+            <select class="form-input" id="ro">
+              <option value="">Select your role...</option>
+              <option>People Operations / HR Leader</option>
+              <option>Talent Acquisition / Recruiter</option>
+              <option>Hiring Manager</option>
+              <option>Founder / CEO</option>
+              <option>HR Consultant</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="form-group full">
+            <label class="form-label">Which Claude skills do you want off the shelf? Select all that apply.</label>
+            <div class="checkbox-grid">
+              <label class="checkbox-item"><input type="checkbox" value="Performance check-ins and scorecards"><span class="checkbox-text">Performance check-ins<small>Lightweight reviews and scorecards</small></span></label>
+              <label class="checkbox-item"><input type="checkbox" value="0-90 day onboarding plans"><span class="checkbox-text">0&ndash;90 day onboarding plans<small>Role-specific new hire frameworks</small></span></label>
+              <label class="checkbox-item"><input type="checkbox" value="Stay interview question generator"><span class="checkbox-text">Stay interview generator<small>Retention conversations by role and level</small></span></label>
+              <label class="checkbox-item"><input type="checkbox" value="Compensation band builder"><span class="checkbox-text">Compensation band builder<small>Comp frameworks for any stage</small></span></label>
+              <label class="checkbox-item"><input type="checkbox" value="PIP writer"><span class="checkbox-text">PIP writer<small>Legally defensible PIPs with SMART goals</small></span></label>
+              <label class="checkbox-item"><input type="checkbox" value="Headcount planning tool"><span class="checkbox-text">Headcount planner<small>Hiring plans from growth goals and budget</small></span></label>
+              <label class="checkbox-item"><input type="checkbox" value="Career ladder builder"><span class="checkbox-text">Career ladder builder<small>Levels and competencies by function</small></span></label>
+              <label class="checkbox-item"><input type="checkbox" value="Org design tool"><span class="checkbox-text">Org design tool<small>Structure planning for scaling teams</small></span></label>
+            </div>
+          </div>
+          <div class="form-group full">
+            <label class="form-label">Anything else you want? Tell us what you'd build if you could.</label>
+            <textarea class="form-input" id="other" placeholder="e.g. A skill that generates RIF checklists by state, or a comp philosophy builder for early-stage startups..."></textarea>
+          </div>
+        </div>
+        <div class="form-error" id="formErr">Please enter your first name and a valid email address.</div>
+        <button class="btn-primary" onclick="submitSignup()">Get early access to every drop</button>
+      </div>
+      <div class="form-success" id="formSuccess">You're on the list. We'll send you every new Claude skill the moment it drops — and your input will shape what we build next.</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══ FRAMEWORK ═══ -->
+<div class="page" id="page-framework">
+  <div class="hero">
+    <div class="hero-eyebrow">A new way to think about work</div>
+    <div class="hero-title">The 8 Key Relationships</div>
+    <div class="hero-domain">of the Modern Work Experience</div>
+    <div class="hero-sub">The traditional job description is tired. It lists tasks and qualifications — but says nothing about what it actually feels like to work somewhere. This framework reimagines it as a holistic portrait of an employee's experience, built around the eight relationships that shape how every person feels throughout their journey with an organization.</div>
+  </div>
+  <div class="body">
+    <div class="section-title">Why job descriptions fail candidates — and companies</div>
+    <div class="section-sub" style="max-width:680px;margin-bottom:40px">Being successful at a company goes far deeper than accomplishing tasks. Yet the reference document we use to attract talent rarely captures any of that depth. The Work Experience Description changes that — treating the job posting as a significant opportunity to help candidates holistically envision themselves in the role. When you write to all 8 relationships honestly, the right candidates self-select in. The wrong ones self-select out. Everyone saves time.</div>
+
+    <div class="fw-grid">
+      <div class="fw-card"><span class="fw-num">01</span><div class="fw-name">The People I Work With</div><div class="fw-body">Who I serve, manage, collaborate, partner, and engage with. Work is fundamentally human — who someone works alongside shapes their daily experience more than almost any other factor.</div></div>
+      <div class="fw-card"><span class="fw-num">02</span><div class="fw-name">The Technology I Use</div><div class="fw-body">The technology that connects me to my work, workforce, and workplace. Technology shapes identity and experience in profound ways — it is the medium through which work happens.</div></div>
+      <div class="fw-card"><span class="fw-num">03</span><div class="fw-name">The Places I Work</div><div class="fw-body">Where I do my work and the physical space in which work gets done. Place is not just logistics — it is context. Where work happens shapes how work feels.</div></div>
+      <div class="fw-card"><span class="fw-num">04</span><div class="fw-name">The Sense of Belonging</div><div class="fw-body">The inclusive community my organization creates. People need to feel they belong — not just tolerated, but genuinely welcomed as themselves.</div></div>
+      <div class="fw-card"><span class="fw-num">05</span><div class="fw-name">The Work I Do</div><div class="fw-body">My work, my ways of working, the norms and methods I use — and how my work strengthens me. Work should develop people, not just consume them.</div></div>
+      <div class="fw-card"><span class="fw-num">06</span><div class="fw-name">How Work Affects My Life</div><div class="fw-body">My wellbeing, compensation, rewards, and how my worthiness is reflected by the organization. These signals tell candidates how the company views its people.</div></div>
+      <div class="fw-card"><span class="fw-num">07</span><div class="fw-name">The Organization I Work For</div><div class="fw-body">The mission, purpose, culture, and leadership behaviors. People want to work for something, not just at something.</div></div>
+      <div class="fw-card"><span class="fw-num">08</span><div class="fw-name">How I Grow as a Human</div><div class="fw-body">The education, experiences, and exposure that support my growth and give me purpose. The best companies develop people, not just employ them.</div></div>
+    </div>
+  </div>
+  <div class="fw-cta">
+    <div class="fw-cta-text">Ready to write a <em>better</em> job description?</div>
+    <button class="btn-download" onclick="downloadSkill()">&#8595; Download the Claude Skill</button>
+  </div>
+</div>
+
+<!-- ═══ SKILL PAGE ═══ -->
+<div class="page" id="page-skill">
+  <div class="hero">
+    <div class="hero-eyebrow">First skill — Talent Acquisition</div>
+    <div class="hero-title">Work Experience Description</div>
+    <div class="hero-domain">+ Interview Plan</div>
+    <div class="claude-badge"><div class="claude-dot"></div>Claude Skill — upload to any Claude conversation</div>
+    <div class="hero-sub">One Claude skill file generates two complete documents: a modern Work Experience Description built on the 8 Key Relationships framework, and a full structured interview plan calibrated to your level, job family, competencies, and values.</div>
+  </div>
+  <div class="body">
+    <div class="steps">
+      <div class="step-card">
+        <div class="step-num">1</div>
+        <div class="step-title">Download SKILL.md</div>
+        <div class="step-body">One file. Contains the full framework, instructions, and methodology. Free.</div>
+        <button onclick="downloadSkill()" style="background:var(--gold);color:var(--ink);border:none;padding:9px 18px;font-family:'DM Sans',sans-serif;font-size:11px;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;border-radius:var(--radius);cursor:pointer;margin-top:12px;">&#8595; Download</button>
+      </div>
+      <div class="step-card">
+        <div class="step-num">2</div>
+        <div class="step-title">Upload to Claude</div>
+        <div class="step-body">Go to claude.ai and start a new conversation. Click the paperclip icon and upload the SKILL.md file.</div>
+        <span class="step-code">claude.ai &rarr; New chat &rarr; paperclip &rarr; upload SKILL.md</span>
+      </div>
+      <div class="step-card">
+        <div class="step-num">3</div>
+        <div class="step-title">Run it</div>
+        <div class="step-body">Type the prompt below. Claude walks you through gathering role details, then generates both documents.</div>
+        <span class="step-code">Run this skill for [job title] at [company name]</span>
+      </div>
+    </div>
+
+    <div class="section-title" style="margin-bottom:8px">What it generates</div>
+    <div class="section-sub">Two complete documents calibrated to your leveling framework (Pave or Carta), job family, competencies, and company values.</div>
+
+    <div class="skill-grid" style="margin-bottom:52px">
+      <div class="skill-card" style="--card-accent:#b8935a;grid-column:span 2;">
+        <div class="claude-chip">Document 1</div>
+        <div class="skill-name" style="font-size:15px;margin-bottom:8px">Work Experience Description</div>
+        <div class="skill-desc" style="font-size:12px">Written in second person around all 8 key relationships: Company Summary &middot; What your experience will be &middot; Why you belong here and how you will grow &middot; What success looks like &middot; What you will bring &middot; How this work affects your life &middot; Compensation structure</div>
+      </div>
+      <div class="skill-card" style="--card-accent:#1d9e75;grid-column:span 2;">
+        <div class="claude-chip">Document 2</div>
+        <div class="skill-name" style="font-size:15px;margin-bottom:8px">Full Interview Plan</div>
+        <div class="skill-desc" style="font-size:12px">Recruiter screen &middot; Hiring manager interview &middot; 2&ndash;3 competency interviews with 1&ndash;4 scorecards &middot; Optional values round with tailored questions &middot; Executive round &middot; Role exercise brief &middot; Master candidate scorecard</div>
+      </div>
+    </div>
+
+    <div onclick="scrollToSignup();showPage('home')" style="text-align:center;margin-bottom:52px">
+      <button class="btn-primary">Get notified for every new skill drop</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ CONSULTING ═══ -->
+<div class="page" id="page-consulting">
+  <div class="hero">
+    <div class="hero-eyebrow">Work with me</div>
+    <div class="hero-title">People Ops expertise,</div>
+    <div class="hero-domain">applied to your team.</div>
+    <div class="hero-sub">Years of scaling People functions at tech companies — from first hire to IPO-ready org. If you need more than a tool, let's work together directly.</div>
+  </div>
+  <div class="body">
+    <div class="services">
+      <div class="service-card"><div class="service-name">Work Experience Audit</div><div class="service-body">Review and rewrite your existing job descriptions using the 8 Key Relationships framework. Includes a library of 5&ndash;10 role WEDs.</div><div class="service-price">Engagement-based</div></div>
+      <div class="service-card"><div class="service-name">Interview System Build</div><div class="service-body">Design your company's full structured interview system — competency frameworks, question banks, scorecards, and interviewer training.</div><div class="service-price">Engagement-based</div></div>
+      <div class="service-card"><div class="service-name">People Ops Advisory</div><div class="service-body">Ongoing fractional People Ops support for Series A&ndash;C companies building their first real People function from scratch.</div><div class="service-price">Monthly retainer</div></div>
+    </div>
+
+    <div class="signup-section">
+      <div class="signup-title">Let's talk.</div>
+      <div class="signup-sub">Fill this out and I'll follow up within 2 business days. No pitch decks, no sales calls — just a real conversation.</div>
+      <div id="consultForm">
+        <div class="form-grid">
+          <div class="form-group"><label class="form-label">Your name</label><input class="form-input" type="text" id="cn" placeholder="Full name"></div>
+          <div class="form-group"><label class="form-label">Work email</label><input class="form-input" type="email" id="ce" placeholder="you@company.com"></div>
+          <div class="form-group"><label class="form-label">Company and role</label><input class="form-input" type="text" id="cc" placeholder="e.g. Head of People at Acme"></div>
+          <div class="form-group"><label class="form-label">What are you trying to solve?</label>
+            <select class="form-input" id="cs">
+              <option value="">Select...</option>
+              <option>Rewrite our job descriptions</option>
+              <option>Build our interview system and scorecards</option>
+              <option>Fractional People Ops support</option>
+              <option>Team workshop or training</option>
+              <option>Something else</option>
+            </select>
+          </div>
+          <div class="form-group full"><label class="form-label">Tell me more</label><textarea class="form-input" id="cm" placeholder="What's the situation? What have you tried? What does success look like?"></textarea></div>
+        </div>
+        <div class="form-error" id="cErr">Please fill in your name, email, and what you're trying to solve.</div>
+        <button class="btn-primary" onclick="submitConsult()">Send inquiry</button>
+        <span style="font-size:12px;color:var(--muted);margin-left:16px;">or <a href="mailto:nyalak@gmail.com" style="color:var(--gold);">email directly</a></span>
+      </div>
+      <div class="form-success" id="consultSuccess">Inquiry received. I'll follow up within 2 business days at nyalak@gmail.com.</div>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  <div class="footer-text">People Studio &middot; peoplestudio.ai &middot; Claude Skills for People leaders</div>
+  <a href="mailto:nyalak@gmail.com" class="footer-link">nyalak@gmail.com</a>
+</div>
+
+<script>
+const SKILL="---\nname: work-experience-and-interview\ndescription: \"Generate a complete Work Experience Description (WED) using the 8 Key Relationships framework AND a full structured interview plan with competency questions, values round, scorecards, and role exercise \u2014 all in one workflow. Use when a hiring manager, recruiter, or HR leader asks to write a job description, job posting, or build an interview process for any role at any level.\"\nargument-hint: \"[job title] [optional: level]\"\n---\n\n# Work Experience Description + Interview Plan Generator\n\nYou are an expert People Operations partner trained in two frameworks:\n\n1. **The 8 Key Relationships Framework** \u2014 a modern approach to writing job descriptions that goes beyond tasks and qualifications to help candidates holistically envision themselves in a role and company\n2. **Structured Interviewing** \u2014 competency-based, values-aligned hiring that is rigorous, fair, and predictive of on-the-job success\n\nYou will run these as one continuous workflow: gather inputs once, generate the Work Experience Description first, then flow directly into the Interview Plan.\n\n---\n\n## PART 1: GATHER INPUTS\n\nCollect all of the following before generating anything. Ask in a conversational way \u2014 not as a form dump.\n\n### Required\n1. **Job title**\n2. **Job family** \u2014 which family does this role belong to? (see Pave reference list below; describe the role if unsure and Claude will suggest one)\n3. **Level** \u2014 which leveling framework do they use?\n   - **Pave**: IC1\u2013IC4 for individual contributors, M3\u2013M8 for managers and leaders\n   - **Carta**: ask them to describe their level structure briefly\n   - **Custom**: ask them to describe the scope (junior / mid / senior / staff / manager / director / VP / C-suite) and map to the closest Pave equivalent\n4. **Department** \u2014 what team does this role sit in?\n5. **Reports to** \u2014 who does this role report to, and a one-sentence description of that person?\n6. **Manages** \u2014 does this role manage anyone? If yes, how many and what type?\n7. **Location** \u2014 remote, hybrid, or in-office? City?\n8. **Company name and one-sentence description** \u2014 what does the company do?\n9. **What problems does this hire solve?** \u2014 the business case for opening the role\n10. **Top 3 things this person must be great at** \u2014 the competencies that define success (used for interview plan)\n11. **Hiring manager name** \u2014 for round assignments in the interview plan\n\n### Optional (ask after required)\n12. **Compensation range** \u2014 base, equity, commission if applicable\n13. **Company values** \u2014 see values section below\n14. **Interview panel members** \u2014 names and titles for round assignments\n15. **Role exercise** \u2014 should the process include a take-home or presentation?\n\n---\n\n## PART 2: VALUES (OPTIONAL \u2014 ASK ONCE, USED IN BOTH DOCUMENTS)\n\nAsk: *\"Would you like to incorporate your company values into both the Work Experience Description and the Interview Plan? Values in the WED help candidates self-select. Values in the interview plan become a dedicated 30-minute round with tailored questions. If yes, paste your values and their full definitions \u2014 the more detail the better.\"*\n\nIf **yes** \u2192 capture values in full. Use them in the WED's \"Why you belong here\" section and generate a complete values interview round in the plan.\n\nIf **no** \u2192 skip values language in both documents.\n\n**Sample format to share if they're unsure:**\n```\nValue: Overachiever Fever\nDefinition: We're overachievers \u2014 we don't know any other way.\nSub-behaviors: Pride in Work, Proactive, Above & Beyond\nWhat it is NOT: Burnout culture. Going rogue. Just meeting goals.\n```\n\n---\n\n## PART 3: LEVEL CALIBRATION\n\nUse across both documents \u2014 WED language, competency depth, and question complexity all scale with level.\n\n| Level | Profile |\n|-------|---------|\n| IC1 | Entry-level. Task-focused. Needs significant guidance. Probe for potential and coachability. |\n| IC2 | Developing. Executing with moderate independence. Beginning to own workstreams. |\n| IC3 | Mid-level. Independently owns outcomes. Cross-functional collaboration. Mentors juniors. |\n| IC4 | Senior. Sets direction within their domain. Influences org-wide decisions. Deep expertise. |\n| M3 | First-line manager. Leads a small team (2\u20136). Player-coach. Still very hands-on. |\n| M4 | Manager/Senior Manager. Manages managers or senior ICs. Strategic and operational. |\n| M5 | Director. Owns a function or significant portion of one. Org design and strategy. |\n| M8 | VP / C-Suite. Sets vision. Manages directors/VPs. External-facing. Board/investor exposure. |\n\n**Competency count rule:**\n- IC1, IC2, IC3 \u2192 **2 competency interviews**\n- IC4, M3, M4, M5, M8 \u2192 **3 competency interviews**\n\n---\n\n## DOCUMENT 1: WORK EXPERIENCE DESCRIPTION\n\nWrite all sections in second person (\"you will\u2026\", \"you'll\u2026\"). Warm, direct, human. No corporate jargon. No bullet starting with \"Responsible for.\"\n\n---\n\n### [ROLE TITLE] \u2014 Work Experience Description\n*(formerly known as: Job Description)*\n\n**[Company Name]** \u00b7 [Department] \u00b7 [Location] \u00b7 [Level]\n\n---\n\n#### Company Summary\n\n2\u20133 sentences: mission, what they build or do, what makes them distinct. If values were shared, close with a culture sentence.\n\n---\n\n#### What your experience will be\n*(The work I do \u00b7 The people I work with \u00b7 The technology I use \u00b7 The places I work)*\n\n3\u20134 sentences covering:\n- Department/team and key collaborators\n- Who they report to (include the one-sentence description)\n- Who they manage, if applicable\n- Location and tools/tech that enable their work\n\nCalibrate scope: IC1\u2013IC2 = execution-focused; IC3\u2013IC4 = outcome ownership; M3\u2013M4 = team leadership; M5\u2013M8 = organizational impact.\n\n---\n\n#### Why you belong here and how you will grow\n*(The sense of belonging \u00b7 How I grow as a human \u00b7 The organization I work for)*\n\n2\u20133 sentences on:\n- Team culture and how belonging is built on this specific team\n- Skills, exposure, and experiences they'll gain in this role\n- If values were provided: how this role connects to those values specifically\n\nAvoid generic phrases (\"fast-paced,\" \"dynamic team\"). Be specific.\n\n---\n\n#### What success looks like\n*(The work I do)*\n\n5\u20138 bullets of responsibilities and outcomes. Frame as outcomes, not duties. Action verbs throughout.\n\nCalibrate:\n- IC1\u2013IC2: tasks, deliverables, execution cadence\n- IC3\u2013IC4: outcomes owned, cross-functional influence, quality bar raised\n- M3\u2013M4: team performance, hiring, culture-building, stakeholder management\n- M5\u2013M8: org design, strategy, business impact, external relationships\n\n---\n\n#### What you will bring\n*(The work I do)*\n\n**Required:**\n- Years of experience (calibrated to level)\n- Management experience (if applicable)\n- Education (only if genuinely required)\n- Key technical skills or domain expertise\n- 2\u20133 behavioral traits that matter for success in this specific role\n\n**Nice to have:**\n- 2\u20134 additional qualifications that strengthen but don't block candidacy\n\nKeep requirements realistic. Separate must-have from would-be-great.\n\n---\n\n#### How this work affects your life\n*(How work affects my life)*\n\n4\u20136 bullets:\n- Work arrangement and what it enables\n- Compensation (use range if provided; otherwise \"competitive, reflective of level and impact\")\n- Benefits highlights (ask user to provide or use common tech company benefits as placeholder)\n- Wellbeing and sustainability framing\n- How this role will shape them as a professional and person\n\n---\n\n#### Compensation Structure\n\n```\nHR Level: [level]\nBase Compensation: [range or TBD]\nEquity: [if applicable]\nCommission: [if applicable]\nRequisition Number: [TBD]\n```\n\n---\n\n## DOCUMENT 2: INTERVIEW PLAN\n\nAfter completing the WED, say: *\"Here's the Interview Plan for this role.\"* Then generate immediately \u2014 no need to re-ask for inputs.\n\n---\n\n### [ROLE TITLE] \u2014 Interview Plan\n\n**Level:** [Level] | **Job Family:** [Family] | **Hiring Manager:** [Name]\n\n---\n\n#### Round 1 \u2014 Recruiter Screen (30 min)\n\nGoal: Qualify fit on role basics, logistics, and motivation before investing manager time.\n\nGenerate 8\u201310 questions covering:\n- Career trajectory and what's driving the search right now\n- Relevant experience snapshot for this specific role\n- Logistics: location, compensation expectations, timeline, active processes\n- Motivation: why this company, why this role, why now\n- 1\u20132 role-specific qualifying questions calibrated to level and job family\n\nQuestions should feel conversational, not interrogative.\n\n---\n\n#### Round 2 \u2014 Hiring Manager Interview (45\u201360 min)\n\nGoal: Assess strategic fit, depth of experience, thinking style, and cultural alignment.\n\nGenerate 8\u201310 questions covering:\n- Depth in the most critical functional area for this role\n- Philosophy and judgment \u2014 how they think, not just what they've done\n- Cross-functional or stakeholder dynamics relevant to this role\n- What they want to build or accomplish in this role\n- What they'd want to know about the company before deciding\n\nM4+ questions should probe strategic thinking and organizational impact, not individual execution.\n\n---\n\n#### Round 3 \u2014 Competency Interviews\n\nFor each of the 3 competencies named (or 2 if below IC4), generate a full block:\n\n```\nCompetency [N]: [Name]\nInterviewer(s): [Name / TBD] | Length: 45\u201360 min\n\nGoal: [One sentence \u2014 what this competency assesses and why it matters for this role]\n\nQuestions:\n1. [Behavioral \u2014 \"Tell me about a time\u2026\"]\n2. [Behavioral \u2014 different angle on the same competency]\n3. [Situational \u2014 \"Imagine you're in a situation where\u2026\"]\n4. [Depth probe \u2014 follows up on what a strong answer would surface]\n5. [Case or hypothetical relevant to this job family \u2014 optional]\n\nScorecard:\n[ ] Strong Yes (4) \u2014 [What a 4 looks like for this competency at this level]\n[ ] Yes (3) \u2014 [What a 3 looks like]\n[ ] No (2) \u2014 [What a\n\n---\n\n#### Values Interview (30 min) \u2014 *only if values were provided*\n\n**Interviewer(s):** [Recommend someone who deeply embodies the values \u2014 not the hiring manager]\n**Goal:** Assess whether demonstrated behaviors align with company values, separate from functional competency.\n\nFor each value, generate:\n- 1 behavioral question (past experience that surfaces the value)\n- 1 situational question (judgment call or hypothetical that tests the nuanced version)\n\n**Values question rules:**\n- Probe behavior, not opinion \u2014 \"Tell me about a time\u2026\" not \"Do you value\u2026\"\n- Each question targets a specific sub-behavior from the value definition\n- At least one question per value should test the \"what it is NOT\" boundary\n- Questions should make the candidate think, not confirm what they think you want to hear\n\n**Scoring note to include:** *\"Score each value 1\u20135. A 3 means 'I can see this person living this value.' A 5 means 'This person is a role model for this value.'\"*\n\n---\n\n#### Round 4 \u2014 Executive Interview (30\u201345 min)\n\n**Interviewer(s):** [Senior leader / CEO / TBD]\n**Goal:** Final bar raise, culture check, and executive presence assessment for senior roles.\n\nGenerate 4\u20135 questions calibrated to level:\n- IC1\u2013IC3: career vision, learning orientation, mission alignment\n- IC4\u2013M4: leadership presence, business acumen, what they'd change or build\n- M5\u2013M8: org vision, stakeholder management, what they need to succeed, how they've made multi-year bets\n\n---\n\n#### Role Exercise *(if applicable)*\n\n```\nExercise Design Principles:\n- Reflect the actual day-to-day of this role\n- Target each competency \u2014 candidates should demonstrate, not just describe\n- Hypothetical scenario only \u2014 never use a current company problem\n- Time limit: 2\u20133 hours (absolute maximum 4 hours)\n- Include a presentation component for M3 and above\n\nSuggested exercise for this role:\n[Generate a 2\u20133 sentence exercise brief based on role, job family, and level]\n\nScoring dimensions:\n- Strategic thinking: does the answer show system-level reasoning?\n- Quality of work product: is it polished and well-organized?\n- Communication: can they explain their thinking clearly?\n- Competency signal: does it demonstrate the top competency for this role?\n```\n\n---\n\n#### Master Candidate Scorecard\n\n```\nCANDIDATE SCORECARD \u2014 [ROLE TITLE]\nCandidate name: ___________________________\nInterview date: ___________________________\n\n| Round                              | Interviewer | Score (1\u20135) | Recommendation      |\n|------------------------------------|-------------|-------------|---------------------|\n| Round 1 \u2014 Recruiter screen         |             |             | Yes / No / Maybe    |\n| Round 2 \u2014 HM interview             |             |             | Yes / No / Maybe    |\n| Competency 1: [name]               |             |             | Yes / No / Maybe    |\n| Competency 2: [name]               |             |             | Yes / No / Maybe    |\n| Competency 3: [name] (if applicable)|            |             | Yes / No / Maybe    |\n| Values interview (if applicable)   |             |             | Yes / No / Maybe    |\n| Round 4 \u2014 Executive                |             |             | Yes / No / Maybe    |\n| Exercise (if applicable)           |             |             | Yes / No / Maybe    |\n\nOverall recommendation:\n[ ] Strong Yes   [ ] Yes   [ ] No   [ ] Strong No\n\nHire rationale (2\u20133 sentences):\n________________________________________________________________\n\nKey risks or development areas:\n________________________________________________________________\n```\n\n---\n\n## Question Bank Reference (draw from when generating questions)\n\nAdapt to the specific role \u2014 never copy verbatim without tailoring.\n\n**Sales (IC1\u2013IC2):** Tell me about a time things didn't go your way and how you responded. / Tell me about a time you had to be persistent to get someone's attention. / What would success look like in this role in your first 90 days? / Tell me about managing multiple priorities with little direction.\n\n**Sales (IC3\u2013IC4):** Walk me through the most successful steps you took to land your most significant deal. / Tell me about the key stakeholders in your last sales process and how you managed each persona. / Have you ever asked a prospect who didn't buy to explain why you lost? What did you learn? / Tell me about turning a deal from no to yes.\n\n**Engineering (M4):** How do you build and maintain relationships with your reports? / How do you get a team into high-performance mode? / Have you ever let someone go? How did you determine and communicate it? / How do you manage stakeholder expectations when technical timelines shift?\n\n**People Operations (M8):** Convince me you are an effective change agent \u2014 give me a specific example. / How do you think about your role relative to your executive counterparts? / How would you design the optimal talent acquisition function for a company at our stage? / How do you measure whether L&D is actually working?\n\n**Product (IC3):** Tell me about a product where success depended on deep collaboration with a non-technical team. / Describe a disagreement with a designer on a product decision \u2014 how did you move forward? / Walk me through how you prioritize when everything is urgent and resources are constrained.\n\n**Creative / Marketing (M4):** Walk me through a brand you've created or significantly changed. / How do you make messaging unexpected and memorable when customers expect consistency? / Tell me about a time your work didn't sell \u2014 what happened and what did you do next?\n\n**General behavioral (all levels):** Tell me about a time you had to go off the beaten path to solve a problem. / Describe a situation that challenged you in a way you didn't expect. / Tell me about a time you had to manage up \u2014 communicating a risk or problem to leadership before it became one.\n\n---\n\n## Pave Job Family Reference\n\nUse to help users identify their job family:\n\nAccount Management \u00b7 Accounting \u00b7 Administration \u00b7 Brand Marketing \u00b7 Business Development \u00b7 Business Operations \u00b7 Communications and PR \u00b7 Community Operations \u00b7 Content Marketing \u00b7 Copywriting \u00b7 Customer Success \u00b7 Customer Success Engineering \u00b7 Customer Support \u00b7 Customer Support Engineering \u00b7 Data Engineering \u00b7 Data Science \u00b7 DevOps Engineering \u00b7 Executive Assistance \u00b7 Finance \u00b7 Growth Marketing \u00b7 Hardware Engineering \u00b7 Industrial Design \u00b7 IT \u00b7 Legal \u00b7 Machine Learning \u00b7 Manufacturing \u00b7 Marketing \u00b7 Mechanical Engineering \u00b7 Media Production \u00b7 Office Management \u00b7 People Operations \u00b7 Product Design \u00b7 Product Management \u00b7 Product Marketing \u00b7 Professional Services \u00b7 Project/Program Management \u00b7 QA Engineering \u00b7 Recruiting \u00b7 Restaurant Operations \u00b7 Sales \u00b7 Sales Engineering \u00b7 Sales Operations \u00b7 Security Engineering \u00b7 Software Engineering \u00b7 Solutions Engineering \u00b7 Supply Chain\n";
+
+function showPage(p){
+  ['home','framework','skill','consulting'].forEach(id=>{
+    document.getElementById('page-'+id).classList.toggle('active',id===p);
+    document.getElementById('nav-'+id)?.classList.toggle('active',id===p);
+  });
+  window.scrollTo(0,0);
+}
+
+function scrollToSignup(){
+  showPage('home');
+  setTimeout(()=>document.getElementById('signupSection')?.scrollIntoView({behavior:'smooth'}),100);
+}
+
+function downloadSkill(){
+  const blob=new Blob([SKILL],{type:'text/markdown'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;a.download='SKILL.md';a.click();
+  URL.revokeObjectURL(url);
+}
+
+function submitSignup(){
+  const fn=document.getElementById('fn').value.trim();
+  const em=document.getElementById('em').value.trim();
+  if(!fn||!em||!em.includes('@')){document.getElementById('formErr').style.display='block';return;}
+  document.getElementById('formErr').style.display='none';
+  const co=document.getElementById('co').value.trim();
+  const ro=document.getElementById('ro').value;
+  const other=document.getElementById('other').value.trim();
+  const checked=[...document.querySelectorAll('#signupForm .checkbox-item input:checked')].map(i=>i.value);
+  const sub=encodeURIComponent('People Studio Signup - '+fn);
+  const body=encodeURIComponent('New signup for peoplestudio.ai
+
+Name: '+fn+'
+Email: '+em+'
+Company: '+(co||'Not provided')+'
+Role: '+(ro||'Not specified')+'
+
+Skills they want:
+'+(checked.length?checked.map(s=>'- '+s).join('
+'):'None selected')+'
+
+Other ideas:
+'+(other||'None'));
+  window.open('mailto:nyalak@gmail.com?subject='+sub+'&body='+body);
+  document.getElementById('signupForm').style.display='none';
+  document.getElementById('formSuccess').style.display='block';
+}
+
+function submitConsult(){
+  const cn=document.getElementById('cn').value.trim();
+  const ce=document.getElementById('ce').value.trim();
+  const cs=document.getElementById('cs').value;
+  if(!cn||!ce||!ce.includes('@')||!cs){document.getElementById('cErr').style.display='block';return;}
+  document.getElementById('cErr').style.display='none';
+  const sub=encodeURIComponent('Consulting Inquiry - '+cs);
+  const body=encodeURIComponent('Name: '+cn+'
+Email: '+ce+'
+Company: '+document.getElementById('cc').value.trim()+'
+Service: '+cs+'
+
+Message:
+'+document.getElementById('cm').value);
+  window.open('mailto:nyalak@gmail.com?subject='+sub+'&body='+body);
+  document.getElementById('consultForm').style.display='none';
+  document.getElementById('consultSuccess').style.display='block';
+}
+</script>
+</body>
+</html>
