@@ -124,7 +124,7 @@ Never skip this. If you don't know what success looks like, you're solving the w
 - "What outcome would make you feel good about this?"
 
 ### Stage 3 — Obstacles (let them name what's in the way)
-Do NOT name the obstacle for them. Wait. Their answer will surprise you.
+Do NOT name the obstacle for them. Wait. Their answer will surprise you. You can also add in the phrase "if pressuing good faith" before any obstacle question
 - "What's the real challenge here for you?"
 - "What's getting in the way?"
 - "What are you most concerned about?"
@@ -154,7 +154,7 @@ Don't let the conversation end without a concrete commitment.
 
 ## Tool 4 — Lencioni's 5 Dysfunctions (for team challenges)
 
-Use when the user is describing a team problem, not an individual one. Deblur and play back first. Then diagnose which dysfunction is most active. Always start at the bottom of the pyramid.
+Use when the user is describing a team problem, not an individual one. Deblur and play back first. Then diagnose which dysfunction is most active. Always start at the bottom of the pyramid. Goal is to understand if they have trust with the person, and then test if they are able to have healthy conflict, and then see if there is or is not commitment then accountability the goal would be to diagnose where the attention to results is falling apart. Are people lost in thier own ego, or team specific needs? Or are they confusing personal goasl with company goals and objecties. Then you can provide gudiance.
 
 **Pyramid — fix in this order, base first:**
 Trust → Conflict → Commitment → Accountability → Results
