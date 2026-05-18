@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Generate a Work Experience Description and full structured Interview Plan using Claude. Built on the 8 Key Relationships framework.">
+<title>Work Experience Description + Interview Plan — People Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --black:#111110;
+  --white:#fafaf8;
+  --mid:#6b6b67;
+  --border:#e4e3de;
+  --accent:#1a5c42;
+  --accent-bg:#eef5f1;
+  --serif:'DM Serif Display',Georgia,serif;
+  --sans:'DM Sans',system-ui,sans-serif;
+}
+html{font-size:16px;scroll-behavior:smooth}
+body{font-family:var(--sans);background:var(--white);color:var(--black);line-height:1.6;-webkit-font-smoothing:antialiased}
+
+nav{display:flex;align-items:center;justify-content:space-between;padding:0 48px;height:64px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--white);z-index:100}
+.nav-logo{font-family:var(--serif);font-size:17px;color:var(--black);text-decoration:none}
+.nav-links{display:flex;align-items:center;gap:28px}
+.nav-links a{font-size:14px;color:var(--mid);text-decoration:none;transition:color .15s}
+.nav-links a:hover{color:var(--black)}
+.nav-back{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--mid);text-decoration:none;transition:color .15s}
+.nav-back:hover{color:var(--black)}
+.nav-back svg{flex-shrink:0}
+
+.hero{max-width:800px;margin:0 auto;padding:72px 48px 56px}
+.breadcrumb{font-size:12px;color:var(--mid);margin-bottom:20px}
+.breadcrumb a{color:var(--mid);text-decoration:none}
+.breadcrumb a:hover{color:var(--black)}
+.skill-badge{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);background:var(--accent-bg);border-radius:20px;padding:4px 12px;margin-bottom:20px}
+h1{font-family:var(--serif);font-size:clamp(34px,5vw,52px);line-height:1.1;letter-spacing:-.02em;margin-bottom:16px}
+.hero-sub{font-size:17px;color:var(--mid);line-height:1.65;max-width:580px;margin-bottom:40px}
+.download-btn{display:inline-flex;align-items:center;gap:10px;background:var(--black);color:var(--white);text-decoration:none;padding:13px 24px;border-radius:8px;font-size:15px;font-weight:500;transition:opacity .15s}
+.download-btn:hover{opacity:.82}
+.download-btn svg{flex-shrink:0}
+.download-note{font-size:13px;color:var(--mid);margin-top:12px}
+
+.divider{border:none;border-top:1px solid var(--border);margin:0}
+
+.framework-section{max-width:800px;margin:0 auto;padding:64px 48px}
+.framework-section h2{font-family:var(--serif);font-size:clamp(24px,3.5vw,34px);letter-spacing:-.02em;margin-bottom:12px}
+.framework-section>p{font-size:15px;color:var(--mid);margin-bottom:48px;line-height:1.65;max-width:580px}
+.relationships{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:0;border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.rel-item{padding:20px 24px;border-bottom:1px solid var(--border);display:flex;gap:16px;align-items:flex-start}
+.rel-item:nth-last-child(-n+2){border-bottom:none}
+.rel-num{font-family:var(--serif);font-size:18px;color:var(--border);flex-shrink:0;line-height:1;padding-top:2px;min-width:20px}
+.rel-text h3{font-size:14px;font-weight:500;margin-bottom:3px}
+.rel-text p{font-size:13px;color:var(--mid);line-height:1.5}
+
+.generates-section{background:#f5f4f0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:64px 48px}
+.generates-inner{max-width:800px;margin:0 auto}
+.generates-section h2{font-family:var(--serif);font-size:clamp(22px,3.5vw,32px);letter-spacing:-.02em;margin-bottom:40px}
+.docs-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px}
+.doc-card{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:28px}
+.doc-label{font-size:11px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--mid);margin-bottom:12px}
+.doc-card h3{font-family:var(--serif);font-size:20px;letter-spacing:-.01em;margin-bottom:12px}
+.doc-card ul{list-style:none;display:flex;flex-direction:column;gap:5px}
+.doc-card li{font-size:13px;color:var(--mid);padding-left:16px;position:relative;line-height:1.5}
+.doc-card li::before{content:'·';position:absolute;left:4px;color:var(--border)}
+
+.how-section{max-width:800px;margin:0 auto;padding:64px 48px}
+.how-section h2{font-family:var(--serif);font-size:clamp(22px,3.5vw,32px);letter-spacing:-.02em;margin-bottom:8px}
+.how-section>p{color:var(--mid);font-size:15px;margin-bottom:40px}
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:32px}
+.step-num{font-family:var(--serif);font-size:26px;color:var(--border);margin-bottom:10px;line-height:1}
+.step h3{font-size:14px;font-weight:500;margin-bottom:6px}
+.step p{font-size:14px;color:var(--mid);line-height:1.6}
+.step code{display:inline-block;margin-top:8px;font-size:12px;background:#e8e7e2;padding:3px 8px;border-radius:4px;font-family:monospace;color:var(--black)}
+
+.cta-strip{border-top:1px solid var(--border);padding:48px;text-align:center}
+.cta-strip p{font-size:15px;color:var(--mid);margin-bottom:20px}
+
+footer{border-top:1px solid var(--border);padding:24px 48px;display:flex;align-items:center;justify-content:space-between}
+footer p{font-size:13px;color:var(--mid)}
+footer a{font-size:13px;color:var(--mid);text-decoration:none}
+footer a:hover{color:var(--black)}
+
+@media(max-width:640px){
+  nav{padding:0 20px}
+  .hero,.framework-section,.how-section{padding-left:20px;padding-right:20px}
+  .generates-section,.cta-strip{padding-left:20px;padding-right:20px}
+  .rel-item:nth-last-child(-n+2){border-bottom:1px solid var(--border)}
+  .rel-item:last-child{border-bottom:none}
+  footer{padding:20px;flex-direction:column;gap:6px;text-align:center}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="nav-logo">People Studio</a>
+  <div class="nav-links">
+    <a href="/" class="nav-back">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 7H2M6 3L2 7l4 4"/></svg>
+      All skills
+    </a>
+    <a href="/consulting">Work with me</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <p class="breadcrumb"><a href="/">People Studio</a> / Talent Acquisition</p>
+  <div class="skill-badge">
+    <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><circle cx="6" cy="6" r="3"/></svg>
+    Live now
+  </div>
+  <h1>Work Experience Description + Interview Plan</h1>
+  <p class="hero-sub">One Claude skill file generates two complete documents — a modern Work Experience Description built on the 8 Key Relationships framework, and a full structured interview plan calibrated to your level, job family, competencies, and values.</p>
+  <a href="/work-experience-and-interview/SKILL.md" download class="download-btn">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v8M4 7l4 4 4-4M2 13h12"/></svg>
+    Download SKILL.md
+  </a>
+  <p class="download-note">Free · Works with Claude Free, Pro, and Team</p>
+</section>
+
+<hr class="divider">
+
+<section class="framework-section">
+  <h2>The 8 Key Relationships framework</h2>
+  <p>The traditional job description lists tasks and qualifications — but says nothing about what it actually feels like to work somewhere. Every Work Experience Description is structured around the 8 relationships that shape how a person feels throughout their journey with an organization.</p>
+  <div class="relationships">
+    <div class="rel-item">
+      <span class="rel-num">01</span>
+      <div class="rel-text">
+        <h3>The people I work with</h3>
+        <p>Who I serve, manage, collaborate, partner, and engage with</p>
+      </div>
+    </div>
+    <div class="rel-item">
+      <span class="rel-num">02</span>
+      <div class="rel-text">
+        <h3>The technology I use</h3>
+        <p>The technology that connects me to my work, workforce, and workplace</p>
+      </div>
+    </div>
+    <div class="rel-item">
+      <span class="rel-num">03</span>
+      <div class="rel-text">
+        <h3>The places I work</h3>
+        <p>Where I do my work and the physical space in which work gets done</p>
+      </div>
+    </div>
+    <div class="rel-item">
+      <span class="rel-num">04</span>
+      <div class="rel-text">
+        <h3>The sense of belonging</h3>
+        <p>The inclusive community my organization creates</p>
+      </div>
+    </div>
+    <div class="rel-item">
+      <span class="rel-num">05</span>
+      <div class="rel-text">
+        <h3>The work I do</h3>
+        <p>My work, my ways of working, the norms and methods I use — and how my work strengthens me</p>
+      </div>
+    </div>
+    <div class="rel-item">
+      <span class="rel-num">06</span>
+      <div class="rel-text">
+        <h3>How work affects my life</h3>
+        <p>My wellbeing, compensation, rewards, and how my worthiness is reflected by the organization</p>
+      </div>
+    </div>
+    <div class="rel-item">
+      <span class="rel-num">07</span>
+      <div class="rel-text">
+        <h3>The organization I work for</h3>
+        <p>The mission, purpose, culture, and leadership behaviors</p>
+      </div>
+    </div>
+    <div class="rel-item">
+      <span class="rel-num">08</span>
+      <div class="rel-text">
+        <h3>How I grow as a human</h3>
+        <p>The education, experiences, and exposure that support my growth and give me purpose</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="generates-section">
+  <div class="generates-inner">
+    <h2>What it generates</h2>
+    <div class="docs-grid">
+      <div class="doc-card">
+        <p class="doc-label">Document 1</p>
+        <h3>Work Experience Description</h3>
+        <ul>
+          <li>Written in second person around all 8 key relationships</li>
+          <li>Company summary and mission</li>
+          <li>What your experience will be</li>
+          <li>Why you belong here and how you'll grow</li>
+          <li>What success looks like</li>
+          <li>What you will bring</li>
+          <li>How this work affects your life</li>
+          <li>Compensation structure</li>
+        </ul>
+      </div>
+      <div class="doc-card">
+        <p class="doc-label">Document 2</p>
+        <h3>Full Interview Plan</h3>
+        <ul>
+          <li>Recruiter screen</li>
+          <li>Hiring manager interview</li>
+          <li>2–3 competency interviews with 1–4 scorecards</li>
+          <li>Optional values round with tailored questions</li>
+          <li>Executive round</li>
+          <li>Role exercise brief</li>
+          <li>Master candidate scorecard</li>
+          <li>Calibrated to Pave or Carta leveling</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="how-section">
+  <h2>How to use it</h2>
+  <p>Three steps. No installation, no code, no terminal.</p>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <h3>Download SKILL.md</h3>
+      <p>One file. Contains the full framework, instructions, and methodology. Free.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <h3>Upload to Claude</h3>
+      <p>Go to claude.ai and start a new conversation. Click the paperclip and upload the file.</p>
+      <code>claude.ai → New chat → paperclip → upload</code>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <h3>Run it</h3>
+      <p>Type the prompt below. Claude gathers your role details, then generates both documents.</p>
+      <code>Run this skill for [job title] at [company]</code>
+    </div>
+  </div>
+</section>
+
+<div class="cta-strip">
+  <p>Free to use · Works with Claude Free, Pro, and Team</p>
+  <a href="/work-experience-and-interview/SKILL.md" download class="download-btn">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v8M4 7l4 4 4-4M2 13h12"/></svg>
+    Download SKILL.md
+  </a>
+</div>
+
+<footer>
+  <p>People Studio · peoplestudio.ai</p>
+  <a href="mailto:nyalak@gmail.com">nyalak@gmail.com</a>
+</footer>
+
+</body>
+</html>
