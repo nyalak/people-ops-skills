@@ -1,10 +1,14 @@
 {
   "cleanUrls": true,
   "trailingSlash": false,
-  "rewrites": [
-    { "source": "/skills/work-experience-and-interview", "destination": "/skills/work-experience-and-interview/index.html" },
-    { "source": "/skills/people-ops-coach", "destination": "/skills/people-ops-coach/index.html" },
-    { "source": "/consulting", "destination": "/consulting/index.html" }
+  "headers": [
+    {
+      "source": "/(.*)\\.md",
+      "headers": [
+        { "key": "Content-Type", "value": "text/markdown; charset=utf-8" },
+        { "key": "Content-Disposition", "value": "attachment; filename=SKILL.md" }
+      ]
+    }
   ],
   "redirects": [
     { "source": "/framework", "destination": "/", "permanent": true },
