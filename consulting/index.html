@@ -1,1 +1,28 @@
 
+<script>
+document.getElementById('contactForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const name = document.getElementById('name').value.trim();
+  const email = document.getElementById('email').value.trim();
+  const topic = document.getElementById('topic').value;
+  const err = document.getElementById('errorMsg');
+  if (!name || !email || !topic) { err.style.display = 'block'; return; }
+  err.style.display = 'none';
+  const btn = this.querySelector('button');
+  btn.textContent = 'Sending...';
+  btn.disabled = true;
+  await fetch('/api/contact', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      name,
+      email,
+      companyRole: document.getElementById('companyRole').value.trim(),
+      topic,
+      detail: document.getElementById('detail').value.trim()
+    })
+  });
+  this.style.display = 'none';
+  document.getElementById('formSuccess').style.display = 'block';
+});
+</script>
