@@ -1,6 +1,11 @@
 {
   "cleanUrls": true,
   "trailingSlash": false,
+  "rewrites": [
+    { "source": "/skills/work-experience-and-interview", "destination": "/skills/work-experience-and-interview/index.html" },
+    { "source": "/skills/people-ops-coach", "destination": "/skills/people-ops-coach/index.html" },
+    { "source": "/consulting", "destination": "/consulting/index.html" }
+  ],
   "redirects": [
     { "source": "/framework", "destination": "/", "permanent": true },
     { "source": "/framework.html", "destination": "/", "permanent": true },
