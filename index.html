@@ -198,11 +198,26 @@ footer a:hover{color:var(--black)}
 </footer>
 
 <script>
-document.getElementById('signupForm').addEventListener('submit',function(e){
+document.getElementById('signupForm').addEventListener('submit', async function(e) {
   e.preventDefault();
-  if(!document.getElementById('firstName').value.trim()||!document.getElementById('email').value.trim())return;
-  this.style.display='none';
-  document.getElementById('formSuccess').style.display='block';
+  const firstName = document.getElementById('firstName').value.trim();
+  const email = document.getElementById('email').value.trim();
+  if (!firstName || !email) return;
+  const btn = this.querySelector('button');
+  btn.textContent = 'Sending...';
+  btn.disabled = true;
+  await fetch('/api/signup', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      firstName,
+      email,
+      company: document.getElementById('company').value.trim(),
+      role: document.getElementById('role').value
+    })
+  });
+  this.style.display = 'none';
+  document.getElementById('formSuccess').style.display = 'block';
 });
 </script>
 </body>
