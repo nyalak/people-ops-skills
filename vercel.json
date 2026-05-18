@@ -1,21 +1,16 @@
 {
+  "cleanUrls": true,
+  "trailingSlash": false,
   "rewrites": [
-    {
-      "source": "/framework",
-      "destination": "/framework.html"
-    },
-    {
-      "source": "/skill",
-      "destination": "/skill.html"
-    },
-    {
-      "source": "/consulting",
-      "destination": "/consulting.html"
-    }
+    { "source": "/skills/work-experience-and-interview", "destination": "/skills/work-experience-and-interview/index.html" },
+    { "source": "/skills/people-ops-coach", "destination": "/skills/people-ops-coach/index.html" },
+    { "source": "/consulting", "destination": "/consulting/index.html" }
   ],
-  "functions": {
-    "api/generate.js": {
-      "maxDuration": 300
-    }
-  }
+  "redirects": [
+    { "source": "/framework", "destination": "/", "permanent": true },
+    { "source": "/framework.html", "destination": "/", "permanent": true },
+    { "source": "/skill", "destination": "/skills/work-experience-and-interview", "permanent": true },
+    { "source": "/skill.html", "destination": "/skills/work-experience-and-interview", "permanent": true },
+    { "source": "/consulting.html", "destination": "/consulting", "permanent": true }
+  ]
 }
