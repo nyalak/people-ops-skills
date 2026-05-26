@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="An AI agent that builds structured meeting agendas using the Slang 4P framework — Purpose, Product, Personal Benefit, and Process." />
+  <title>Meeting Agenda Builder — People Studio</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --black: #0a0a0a;
+      --white: #ffffff;
+      --gray-50: #f9f9f8;
+      --gray-100: #f0efeb;
+      --gray-200: #e2e0da;
+      --gray-400: #9a9890;
+      --gray-600: #5c5a55;
+      --gray-800: #2a2926;
+      --accent: #7c6af7;
+      --accent-light: #ede9ff;
+      --accent-dark: #5244d4;
+      --green: #1a7a52;
+      --green-light: #e3f5ed;
+      --amber: #8a5c00;
+      --amber-light: #fef3db;
+    }
+
+    body {
+      font-family: 'Georgia', 'Times New Roman', serif;
+      background: var(--white);
+      color: var(--black);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    /* Nav */
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.25rem 2rem;
+      border-bottom: 1px solid var(--gray-200);
+      position: sticky;
+      top: 0;
+      background: var(--white);
+      z-index: 100;
+    }
+
+    .nav-logo {
+      font-family: 'Georgia', serif;
+      font-size: 1rem;
+      font-weight: normal;
+      color: var(--black);
+      letter-spacing: -0.01em;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+      font-size: 0.875rem;
+      color: var(--gray-600);
+      transition: color 0.15s;
+    }
+
+    .nav-links a:hover { color: var(--black); }
+
+    /* Breadcrumb */
+    .breadcrumb {
+      padding: 1.5rem 2rem 0;
+      max-width: 860px;
+      margin: 0 auto;
+      font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+      font-size: 0.8rem;
+      color: var(--gray-400);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .breadcrumb a { color: var(--gray-400); }
+    .breadcrumb a:hover { color: var(--black); }
+    .breadcrumb span { color: var(--gray-400); }
+
+    /* Hero */
+    .hero {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 3rem 2rem 2.5rem;
+      border-bottom: 1px solid var(--gray-200);
+    }
+
+    .badge {
+      display: inline-block;
+      font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 0.25rem 0.6rem;
+      border-radius: 4px;
+      background: var(--accent-light);
+      color: var(--accent-dark);
+      margin-bottom: 1.25rem;
+    }
+
+    .hero h1 {
+      font-size: clamp(2rem, 5vw, 2.75rem);
+      font-weight: normal;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      color: var(--black);
+      margin-bottom: 1rem;
+    }
+
+    .hero-sub {
+      font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+      font-size: 1.05rem;
+      color: var(--gray-600);
+      max-width: 600px;
+      line-height: 1.65;
+      margin-bottom: 2rem;
+    }
+
+    .hero-meta {
+      font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+      font-size: 0.8rem;
+      color: var(--gray-400);
+    }
+
+    /* Agent CTA box */
+    .agent-cta {
+      max-width: 860px;
+      margin: 2.5rem auto;
+      padding: 0 2rem;
+    }
+
+    .cta-box {
+      background: var(--gray-50);
+      border: 1px solid var(--gray-200);
+      border-radius: 12px;
+      padding: 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .cta-box-text p:first-child {
+      font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--gray-400);
+      font-weight: 600;
+      margin-bottom: 0.4rem;
+    }
+
+    .cta-box-text p:last-child {
+      font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+      font-size: 0.875rem;
+      color: var(--gray-600);
+    }
+
+    .cta-box-text h2 {
+      font-size: 1.15rem;
+      font-weight: normal;
+      letter-spacing: -0.01em;
+      margin-bottom: 0.3rem;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--black);
+      color: var(--white);
+      font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+      font-size: 0.875rem;
+      font-weight: 500;
+      padding: 0.7rem 1.4rem;
+      border-radius: 8px;
+      white-space: nowrap;
+      transition: background 0.15s;
+    }
+
+    .btn-primary:hover { background: var(--gray-800); }
+
+    /* Content sections */
+    .content {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    .section {
+      padding: 3rem 0;
+      border-bottom: 1px solid var(--gray-200);
+    }
+
+    .section:last-child { border-bottom: none; }
+
+    .section-label {
+      font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--gray-400);
+      margin-bottom: 1.5rem;
+    }
+
+    .section h2 {
+      font-size: 1.6rem;
+      font-weight: normal;
+      letter-spacing: -0.02em;
+      margin-bottom: 1rem;
+      line-height: 1.25;
+    }
+
+    .section p {
+      font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+      font-size: 0.95rem;
+      color: var(--gray-600);
+      line-height: 1.7;
+      max-width: 640px;
+      margin-bottom: 1rem;
+    }
+
+    /* 4P grid */
+    .four-p-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    .p-card {
+      border: 1px solid var(--gray-200);
+      border-radius: 10px;
+      padding: 1.25rem;
+      background: var(--white);
+    }
+
+    .p-card-label {
+      font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+    }
+
+    .p-card h3 {
+      font-size: 1rem;
+      font-weight: normal;
+      letter-spacing: -0.01em;
+      margin-bottom: 0.5rem;
+    }
+
+    .p-card p {
+      font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+      font-size: 0.8rem;
+      color: var(--gray-600);
+      line-height: 1.55;
+      margin: 0;
+    }
+
+    /* Meeting types */
+    .types-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    @media (max-width: 600px) {
+      .types-grid { grid-template-columns: 1fr; }
+    }
+
+    .type-card {
+      border: 1px solid var(--gray-200);
+      border-radius: 10px;
+      padding: 1.25rem;
+    }
+
+    .type-card h3 {
+      font-size: 1rem;
+      font-weight: normal;
+      letter-spacing: -0.01em;
+      margin-bottom: 0.5rem;
+    }
+
+    .type-card p {
+      font-size: 0.8rem;
+      color: var(--gray-600);
+      margin: 0 0 1rem;
+    }
+
+    .type-tools {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+    }
+
+    .tool-tag {
+      font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+      font-size: 0.7rem;
+      padding: 0.2rem 0.55rem;
+      border-radius: 4px;
+      background: var(--gray-100);
+      color: var(--gray-600);
+      border: 1px solid var(--gray-200);
+    }
+
+    /* How to use */
+    .steps {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+
+    .step {
+      display: flex;
+      gap: 1.25rem;
+      align-items: flex-start;
+    }
+
+    .step-num {
+      font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--gray-400);
+      background: var(--gray-100);
+      border-radius: 50%;
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .step-content h3 {
+      font-size: 1rem;
+      font-weight: normal;
+      letter-spacing: -0.01em;
+      margin-bottom: 0.3rem;
+    }
+
+    .step-content p {
+      font-size: 0.875rem;
+      color: var(--gray-600);
+      margin: 0;
+    }
+
+    code {
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.8rem;
+      background: var(--gray-100);
+      border: 1px solid var(--gray-200);
+      border-radius: 4px;
+      padding: 0.15rem 0.4rem;
+      color: var(--gray-800);
+    }
+
+    /* Vocab */
+    .vocab-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin-top: 1.5rem;
+    }
+
+    .vocab-item {
+      display: flex;
+      gap: 1rem;
+      align-items: baseline;
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      background: var(--gray-50);
+      border: 1px solid var(--gray-200);
+    }
+
+    .vocab-term {
+      font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--accent-dark);
+      min-width: 110px;
+      flex-shrink: 0;
+    }
+
+    .vocab-def {
+      font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+      font-size: 0.875rem;
+      color: var(--gray-600);
+      line-height: 1.5;
+    }
+
+    /* Bottom CTA */
+    .bottom-cta {
+      background: var(--gray-50);
+      border-top: 1px solid var(--gray-200);
+      padding: 3rem 2rem;
+      text-align: center;
+    }
+
+    .bottom-cta p {
+      font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+      font-size: 0.875rem;
+      color: var(--gray-400);
+      margin-top: 0.75rem;
+    }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--gray-200);
+      padding: 1.5rem 2rem;
+      text-align: center;
+      font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+      font-size: 0.8rem;
+      color: var(--gray-400);
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="/" class="nav-logo">People Studio</a>
+    <ul class="nav-links">
+      <li><a href="/">All skills</a></li>
+      <li><a href="/consulting">Work with me</a></li>
+    </ul>
+  </nav>
+
+  <div class="breadcrumb">
+    <a href="/">People Studio</a>
+    <span>/</span>
+    <span>Meetings</span>
+  </div>
+
+  <header class="hero">
+    <div class="badge">New</div>
+    <h1>Meeting Agenda Builder</h1>
+    <p class="hero-sub">An AI agent trained on the Slang Meetings Mastery framework. Walks you through the 4P opener — Purpose, Product, Personal Benefit, and Process — and outputs a ready-to-run agenda in seconds.</p>
+    <p class="hero-meta">Agent · Works with Claude Free, Pro, and Team</p>
+  </header>
+
+  <div class="agent-cta">
+    <div class="cta-box">
+      <div class="cta-box-text">
+        <p>How to use</p>
+        <h2>Open in Claude, paste the prompt, go.</h2>
+        <p>No file to download. Copy the agent prompt below, paste it into a Claude Project or new chat, and start building agendas.</p>
+      </div>
+      <a href="#how-to-use" class="btn-primary">
+        Get the prompt ↓
+      </a>
+    </div>
+  </div>
+
+  <main class="content">
+
+    <section class="section">
+      <p class="section-label">The framework</p>
+      <h2>Built on the 4P Opener</h2>
+      <p>Every great meeting starts with four things made clear upfront. The 4P framework from Slang's Meetings Mastery training gives every participant a shared mental model before the first agenda item begins.</p>
+      <div class="four-p-grid">
+        <div class="p-card">
+          <div class="p-card-label">Purpose</div>
+          <h3>Why this meeting is happening</h3>
+          <p>Defines the goal and ensures it's a strategic use of everyone's time. Clarifying purpose upfront keeps participants focused instead of distracted.</p>
+        </div>
+        <div class="p-card">
+          <div class="p-card-label">Product</div>
+          <h3>What will exist at the end</h3>
+          <p>Creates a mental progress bar. The more tangible the product, the more people hold themselves accountable for staying on track.</p>
+        </div>
+        <div class="p-card">
+          <div class="p-card-label">Personal Benefit</div>
+          <h3>Why attendees will care</h3>
+          <p>Ignites meaning and motivation. When you're genuinely excited about the topic, others will be too.</p>
+        </div>
+        <div class="p-card">
+          <div class="p-card-label">Process</div>
+          <h3>How the time is structured</h3>
+          <p>The agenda itself — ideally shared in advance, kept visible, with durations so people stay time-aware throughout.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <p class="section-label">Meeting types</p>
+      <h2>Three types. Different tools for each.</h2>
+      <p>The agent identifies your meeting type and recommends the right tools automatically — so you're never running an Explore meeting with Narrow meeting energy.</p>
+      <div class="types-grid">
+        <div class="type-card">
+          <h3>Inform</h3>
+          <p>Share information, news, thoughts, and feelings. Answer questions.</p>
+          <div class="type-tools">
+            <span class="tool-tag">Round Robin</span>
+            <span class="tool-tag">Q-Storm</span>
+          </div>
+        </div>
+        <div class="type-card">
+          <h3>Explore</h3>
+          <p>Ask questions, generate ideas, spark new insights and possibilities.</p>
+          <div class="type-tools">
+            <span class="tool-tag">Defer Judgement</span>
+            <span class="tool-tag">Ideas Quota</span>
+            <span class="tool-tag">Cross Pollinate</span>
+          </div>
+        </div>
+        <div class="type-card">
+          <h3>Narrow</h3>
+          <p>Debate, prioritize, vote, decide, and determine a plan of action.</p>
+          <div class="type-tools">
+            <span class="tool-tag">DACI</span>
+            <span class="tool-tag">Pro/Con/Mitigate</span>
+            <span class="tool-tag">Impact/Feasibility</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <p class="section-label">Slang vocabulary</p>
+      <h2>The agent speaks Slang</h2>
+      <p>This agent uses Slang's methodology vocabulary throughout — so every session reinforces the framework, not just the output.</p>
+      <div class="vocab-list">
+        <div class="vocab-item">
+          <span class="vocab-term">Deblur</span>
+          <span class="vocab-def">Turn ambiguous words into information clear enough for everyone to understand with the intended meaning. The agent will Q-Step you when it spots blur words like "better," "more," or "ASAP."</span>
+        </div>
+        <div class="vocab-item">
+          <span class="vocab-term">Q-Step</span>
+          <span class="vocab-def">Taking a step back to ask a quality question instead of jumping to answers. Great managers ask 5x more questions — the agent defaults to question mode.</span>
+        </div>
+        <div class="vocab-item">
+          <span class="vocab-term">Course Correct</span>
+          <span class="vocab-def">Scripted phrases for when meetings go off track — low participation, topic drift, unclear decision-making. The agent offers these at the end of every agenda build.</span>
+        </div>
+        <div class="vocab-item">
+          <span class="vocab-term">Meeting Entanglement</span>
+          <span class="vocab-def">When a problem-solving conversation hijacks an Inform meeting. The agent flags this risk and helps you keep topics in their right container.</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="how-to-use">
+      <p class="section-label">How to use it</p>
+      <h2>Three steps. No installation.</h2>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <h3>Copy the agent prompt</h3>
+            <p>Click the button below to copy the full system prompt. It contains the complete 4P framework, Slang vocabulary, meeting type logic, and output format.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <h3>Paste into Claude</h3>
+            <p>Go to <code>claude.ai</code> → create a new Project → paste into Project Instructions. Or paste directly into a new chat to try it immediately.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <h3>Build your agenda</h3>
+            <p>Tell the agent what meeting you need to run. It asks the right questions, catches blur words, and outputs a formatted agenda with a proper title and timed sections.</p>
+            <p style="margin-top: 0.5rem;"><code>I have a team meeting Tuesday about Q3 goals</code></p>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top: 2.5rem; background: var(--gray-50); border: 1px solid var(--gray-200); border-radius: 10px; padding: 1.5rem;">
+        <p style="font-family: -apple-system, sans-serif; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--gray-400); margin-bottom: 1rem;">Agent system prompt</p>
+        <pre id="agent-prompt" style="font-family: 'Courier New', monospace; font-size: 0.775rem; color: var(--gray-800); line-height: 1.65; white-space: pre-wrap; word-break: break-word; margin: 0;">You are a Meeting Mastery Agent trained in the Slang meetings framework. Your job is to help people build clear, purposeful meeting agendas using the 4P format: Purpose, Product, Personal Benefit, and Process.
+
+You speak in Slang vocabulary throughout:
+- "Deblur" = turning vague language into specific, shared meaning
+- "Q-Step" = pausing to ask a quality question instead of jumping to answers
+- "Inform / Explore / Narrow" = the three meeting types
+- "4P Opener" = the structured way to open any meeting
+
+---
+
+HOW TO RUN EACH SESSION:
+
+Step 1 — Intake
+Ask the user:
+• What is this meeting about?
+• Who is attending?
+• What type of meeting is it — Inform, Explore, or Narrow? (Briefly explain each if they're unsure.)
+
+Step 2 — Deblur the purpose
+If their answers contain blur words (better, worse, more, less, ASAP, aligned, engaged), Q-Step them. Ask: "What does [blur word] mean specifically? How would you know you've succeeded?"
+
+Step 3 — Build the 4Ps together
+Walk through each P with a brief explanation of why it matters:
+• Purpose — why is this meeting happening? (Deblurred, specific)
+• Product — what will the group have at the end that didn't exist before?
+• Personal Benefit — what's in it for attendees? (This is what motivates participation.)
+• Process — how will you structure the time? Suggest the right meeting tools based on type:
+  - Inform → Round Robin, Q-Storm
+  - Explore → Defer Judgement, Ideas Quota, Cross Pollinate
+  - Narrow → DACI, Pro/Con/Mitigate, Impact/Feasibility Map
+
+Step 4 — Output the agenda
+Produce a ready-to-paste agenda in this format:
+
+MEETING TITLE: [TYPE] [Topic/Audience] [Date]
+
+PURPOSE: [1 sentence, deblurred]
+PRODUCT: [Tangible outcome — what will exist at the end?]
+PERSONAL BENEFIT: [Why attendees will care]
+
+AGENDA:
+[Time] — [Agenda item]
+[Time] — [Agenda item]
+[Time] — [Agenda item]
+
+MEETING TOOLS: [Recommended tools for this session]
+
+Step 5 — Offer course correction language
+Ask: "Would you like sample course correction phrases in case the meeting goes off track?" If yes, provide 2-3 relevant ones based on common challenges (low participation, topic drift, no clear decision maker).
+
+---
+
+TONE: Warm, specific, and direct. Never generic. Always Q-Step blur before moving forward. Keep explanations brief — one sentence of "why" per step is enough.</pre>
+        <button onclick="
+          const text = document.getElementById('agent-prompt').innerText;
+          navigator.clipboard.writeText(text).then(() => {
+            this.textContent = 'Copied!';
+            setTimeout(() => { this.textContent = 'Copy agent prompt'; }, 2000);
+          });
+        " style="margin-top: 1.25rem; font-family: -apple-system, sans-serif; font-size: 0.8rem; font-weight: 500; padding: 0.6rem 1.2rem; border-radius: 6px; border: 1px solid var(--gray-200); background: var(--white); cursor: pointer; transition: background 0.15s;">
+          Copy agent prompt
+        </button>
+      </div>
+    </section>
+
+  </main>
+
+  <div class="bottom-cta">
+    <a href="#how-to-use" class="btn-primary" style="display: inline-flex;">Get the agent prompt ↑</a>
+    <p>Free to use · Works with Claude Free, Pro, and Team</p>
+  </div>
+
+  <footer>
+    People Studio · peoplestudio.ai
+  </footer>
+
+</body>
+</html>
